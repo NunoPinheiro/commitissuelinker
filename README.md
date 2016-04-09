@@ -1,4 +1,4 @@
-# GitHub Issue Linker
+# Commit Issue Linker
 Add links to your issues in your commits or pull requests
 
 # Compile
