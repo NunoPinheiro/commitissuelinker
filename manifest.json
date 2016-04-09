@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+
+  "name": "Github Issue Link",
+  "description": "This extension adds links to your issue tracker when you are inside a github commit/pull request",
+  "version": "0.1",
+
+  "content_scripts": [
+   {
+     "matches": ["https://github.com/*/pull/*"],
+     "js": ["vendor/jquery/dist/jquery.min.js", "src/repository-storage.js", "src/handleGitHub.js"]
+   },
+   {
+     "matches": ["https://github.com/*/commit/*"],
+     "js": ["vendor/jquery/dist/jquery.min.js", "src/repository-storage.js", "src/handleGitHub.js"]
+   }
+ ],
+  "browser_action": {
+    "default_popup": "src/popup.html"
+  },
+  "permissions": [
+    "storage"
+  ]
+}
