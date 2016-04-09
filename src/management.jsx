@@ -1,6 +1,6 @@
 var App = React.createClass({
   getInitialState : function(){
-    return {repos : [], selectedRepos : [], editionObject : null};
+    return {repos : [], selectedRepos : [], editionObject : null, exportComponent : null, importComponent : null, imported : ""};
   },
   componentDidMount : function(){
     this.updateViewToDatabase();
@@ -22,8 +22,11 @@ var App = React.createClass({
         <div>
           <button onClick={this.openCreator}>Create New</button>
           <button onClick={this.exportSelected}>Export Selected</button>
+          <button onClick={this.importNew}>Import</button>
         </div>
         {editingComponent}
+        {this.state.importComponent}
+        {this.state.exportComponent}
       </div>
     );
   },
@@ -40,10 +43,55 @@ var App = React.createClass({
     }.bind(this));
   },
   exportSelected : function(){
-
+    var lines = [];
+    for(var i in this.state.selectedRepos){
+      var obj = this.state.selectedRepos[i];
+      //we need to ignore the id during export
+      lines.push({scm : obj.scm, keyword : obj.keyword, targetURL : obj.targetURL});
+    }
+    var stringifiedLines = JSON.stringify(lines);
+    var exportComponent = (
+      <ModalWindow>
+        <p>{stringifiedLines}</p>
+        <button onClick={this.closeExport}>Close</button>
+      </ModalWindow>
+    );
+    this.setState({exportComponent : exportComponent});
+  },
+  closeExport : function(){
+    this.setState({exportComponent : null});
   },
   importNew : function(){
-    
+    var importComponent = (
+      <ModalWindow>
+        <div>
+          <textarea onChange={this.updateImportData}></textarea>
+        </div>
+        <div>
+          <button onClick={this.doImport}>Import</button>
+          <button onClick={this.closeImport}>Close</button>
+        </div>
+      </ModalWindow>
+    );
+    this.setState({importComponent : importComponent});
+  },
+  updateImportData : function(event){
+    this.state.importData = event.target.value;
+  },
+  doImport : function(){
+    var objects = JSON.parse(this.state.importData);
+
+    for(var i in objects){
+      addOrUpdateRepository(objects[i], this.updateImportedLines);
+    }
+    this.closeImport();
+  },
+  updateImportedLines : function(object){
+    this.updateViewToDatabase();
+  },
+  closeImport : function(){
+    this.updateViewToDatabase();
+    this.setState({importComponent : null});
   },
   toggleSelectedRepo : function(selected, repo){
     //selected var represents if the box was checked (true) or unchecked (false)
@@ -61,6 +109,34 @@ var App = React.createClass({
     }.bind(this));
   }
 });
+var ModalWindow = React.createClass({
+  render : function(){
+    return (
+      <div style={this.style.overlayStyle}>
+        <div style={this.style.modalStyle}>
+          {this.props.children}
+        </div>
+      </div>
+    );
+  },
+  style : {
+    overlayStyle : {
+      z : 20,
+      width : "100%",
+      height : "100%",
+      position : "fixed",
+      left : 0,
+      top : 0,
+      backgroundColor : "rgba(50,50,50, 0.9)",
+    },
+    modalStyle : {
+      margin : "50px",
+      padding : "20px",
+      backgroundColor : "white",
+      display : "inline-block"
+    }
+  }
+});
 var RepositoryEditor = React.createClass({
   getInitialState : function(){
     return {editedElement : {}};
@@ -73,8 +149,7 @@ var RepositoryEditor = React.createClass({
   },
   render: function() {
     return (
-      <div style={this.style.overlayStyle}>
-        <div style={this.style.modalStyle}>
+      <ModalWindow>
           <div style={this.style.line}>
             Repo Name : <input type="text" onChange={this.changeEvent("scm")} defaultValue={this.props.repo.scm}/>
           </div>
@@ -88,8 +163,7 @@ var RepositoryEditor = React.createClass({
           <button onClick={this.triggerSaveEvent}>Save</button>
           <button onClick={this.triggerCancelEvent}>Cancel</button>
           </div>
-        </div>
-      </div>
+      </ModalWindow>
     );
   },
   changeEvent : function(property){
@@ -108,21 +182,6 @@ var RepositoryEditor = React.createClass({
     }
   },
   style : {
-    overlayStyle : {
-      z : 20,
-      width : "100%",
-      height : "100%",
-      position : "fixed",
-      left : 0,
-      top : 0,
-      backgroundColor : "rgba(50,50,50, 0.9)",
-    },
-    modalStyle : {
-      margin : "50px",
-      padding : "20px",
-      backgroundColor : "white",
-      display : "inline-block"
-    },
     line : {
       margin : "5px"
     }
@@ -141,7 +200,7 @@ var Repository = React.createClass({
     return (
       <div style={this.style.line}>
         <div style={this.style.lineElement}>
-          <input onClick={this.props.triggerSelectionEvent} type="checkbox" />
+          <input onClick={this.triggerSelectionEvent} type="checkbox" />
         </div>
         <div style={this.style.lineElement}>{this.props.repo.scm}</div>
         <div style={this.style.lineElement}>{this.props.repo.keyword}</div>

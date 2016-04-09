@@ -25,10 +25,9 @@ function processRepo(repo){
   for( var i in splittedBody){
     var text = splittedBody[i];
     if (splittedBody[i].indexOf(repo.keyword) > -1){
-      //Clean the link from some symbols added to represent the issues
+      //Clean the link from some symbols usually added to destinguish issue-id from commit message
       var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "");
       commentBody.html(commentBody.html().replace(text, '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
     }
   }
 }
-debugger;
