@@ -13,21 +13,25 @@ String.prototype.replaceAll = function(search, replace)
 var repoFromLink = window.location.pathname.split("/")[2];
 
 listRepositories(function(repos){
-    var repo = repos.find(repo => repo.scm == repoFromLink);
-    if(repo){
-      processRepo(repo);
+    var repos = repos.filter(repo => repo.scm == repoFromLink);
+    if(repos){
+      processRepo(repos);
     }
 });
 
-function processRepo(repo){
+function processRepo(repos){
   var commentBody = $(".comment-body, .commit-title, .commit-desc");
   var splittedBody = commentBody.text().split(" ");
   for( var i in splittedBody){
     var text = splittedBody[i];
-    if (splittedBody[i].indexOf(repo.keyword) > -1){
-      //Clean the link from some symbols usually added to destinguish issue-id from commit message
-      var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "");
-      commentBody.html(commentBody.html().replace(text, '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
+    for(var j in repos){
+      var repo = repos[j];
+      if (splittedBody[i].indexOf(repo.keyword) > -1){
+        console.log("here");
+        //Clean the link from some symbols usually added to destinguish issue-id from commit message
+        var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "");
+        commentBody.html(commentBody.html().replace(text, '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
+      }
     }
   }
 }
