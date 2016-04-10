@@ -12,6 +12,8 @@ String.prototype.replaceAll = function(search, replace)
 
 var repoFromLink = window.location.pathname.split("/")[2];
 
+
+
 listRepositories(function(repos){
     var repos = repos.filter(repo => repo.scm == repoFromLink);
     if(repos){
@@ -19,19 +21,24 @@ listRepositories(function(repos){
     }
 });
 
+
 function processRepo(repos){
-  var commentBody = $(".comment-body, .commit-title, .commit-desc");
-  var splittedBody = commentBody.text().split(" ");
-  for( var i in splittedBody){
-    var text = splittedBody[i];
-    for(var j in repos){
-      var repo = repos[j];
-      if (splittedBody[i].indexOf(repo.keyword) > -1){
-        console.log("here");
-        //Clean the link from some symbols usually added to destinguish issue-id from commit message
-        var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "");
-        commentBody.html(commentBody.html().replace(text, '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
+  var components = $(".comment-body, .commit-title, .commit-desc");
+
+  for(var componentIndex = 0; componentIndex < components.length; componentIndex++){
+    var commentBody = $(components[componentIndex]);
+    var splittedBody = commentBody.text().split(" ");
+    for( var i in splittedBody){
+      var text = splittedBody[i];
+      for(var j in repos){
+        var repo = repos[j];
+        if (splittedBody[i].indexOf(repo.keyword) > -1){
+          //Clean the link from some symbols usually added to destinguish issue-id from commit message
+          var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "").trim();
+          commentBody.html(commentBody.html().replace(cleanedText, '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
+        }
       }
     }
   }
+
 }
