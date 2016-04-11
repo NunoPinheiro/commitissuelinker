@@ -9,17 +9,29 @@ String.prototype.replaceAll = function(search, replace)
     return this.replace(new RegExp('[' + search + ']', 'g'), replace);
 };
 
-
-var repoFromLink = window.location.pathname.split("/")[2];
-
-
-
-listRepositories(function(repos){
-    var repos = repos.filter(repo => repo.scm == repoFromLink);
-    if(repos){
-      processRepo(repos);
-    }
+// GitHub is using pjax to reload the page. This means the browser will not detect the page change event
+// We need to trigger our plugin when a page change occurs
+$(document).on('pjax:end', function() {
+  injectPage();
 });
+
+injectPage();
+
+function injectPage(){
+  var splittedURL = window.location.pathname.split("/");
+  var isCommitListPage = splittedURL.indexOf("commits") > -1;
+  //Only inject on pages related to a project, and are not a commit listing
+  if(splittedURL.length > 2 && !isCommitListPage){
+    var repoFromLink = splittedURL[2];
+
+    listRepositories(function(repos){
+        var repos = repos.filter(repo => repo.scm == repoFromLink);
+        if(repos){
+          processRepo(repos);
+        }
+    });
+  }
+}
 
 
 function processRepo(repos){
