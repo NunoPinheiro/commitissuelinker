@@ -1,3 +1,3 @@
 document.getElementById("openManagement").addEventListener("click", function(){
-    chrome.tabs.create({url : "src/management.html"});
+    chrome.tabs.create({url : "src/management/management.html"});
 });

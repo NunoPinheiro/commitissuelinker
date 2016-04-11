@@ -8,15 +8,15 @@
   "content_scripts": [
    {
      "matches": ["https://github.com/*/pull/*"],
-     "js": ["vendor/jquery/dist/jquery.min.js", "src/repository-storage.js", "src/handleGitHub.js"]
+     "js": ["vendor/jquery/dist/jquery.min.js", "src/storage/repository-storage.js", "src/githubProcessing/handleGitHub.js"]
    },
    {
      "matches": ["https://github.com/*/commit/*"],
-     "js": ["vendor/jquery/dist/jquery.min.js", "src/repository-storage.js", "src/handleGitHub.js"]
+     "js": ["vendor/jquery/dist/jquery.min.js", "src/storage/repository-storage.js", "src/githubProcessing/handleGitHub.js"]
    }
  ],
   "browser_action": {
-    "default_popup": "src/popup.html"
+    "default_popup": "src/popup/popup.html"
   },
   "permissions": [
     "storage"
