@@ -39,7 +39,7 @@ function processRepo(repos){
 
   for(var componentIndex = 0; componentIndex < components.length; componentIndex++){
     var commentBody = $(components[componentIndex]);
-    var splittedBody = commentBody.html().toString().split(" ");
+    var splittedBody = commentBody.text().toString().split(" ");
     for( var i in splittedBody){
       var text = splittedBody[i];
       for(var j in repos){
@@ -47,8 +47,8 @@ function processRepo(repos){
         if (splittedBody[i].indexOf(repo.keyword) > -1){
           //Clean the link from some symbols usually added to destinguish issue-id from commit message
           var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "").trim();
-
-          commentBody.html(commentBody.html().replace(text, '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
+          debugger;
+          commentBody.html(commentBody.html().replace(text.trim(), '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
         }
       }
     }
