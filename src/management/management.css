@@ -1,0 +1,8 @@
+/*Styles for header*/
+.page-header{
+  margin-top: 0px;
+}
+.page-header > h1{
+  margin-top: 0px;
+  padding-top: 10px;
+}

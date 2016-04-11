@@ -2,7 +2,9 @@
   "name": "issue-linker",
   "ignore": [],
   "dependencies": {
-    "react": "15.0.1",
-    "jquery" : "2.2.3"
+    "react": "~15.0.1",
+    "jquery": "2.2.3",
+    "react-bootstrap": "~0.28.5",
+    "bootstrap": "~3.3.6"
   }
 }

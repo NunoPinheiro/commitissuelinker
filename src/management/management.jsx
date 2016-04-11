@@ -1,3 +1,7 @@
+//Import react-bootstrap elements
+
+var { Button, Modal, Row, Table, PageHeader, Input} = window.ReactBootstrap;
+
 var App = React.createClass({
   getInitialState : function(){
     return {repos : [], selectedRepos : [], editionObject : null, exportComponent : null, importComponent : null, imported : ""};
@@ -7,9 +11,7 @@ var App = React.createClass({
   },
   render: function() {
     var reposComponents = this.state.repos.map(repo => {
-      return (<div>
-                <Repository key={repo.id} onEdit={this.updateViewToDatabase} onSelectToggle={this.toggleSelectedRepo} repo={repo} />
-              </div>);
+      return <Repository key={repo.id} onEdit={this.updateViewToDatabase} onSelectToggle={this.toggleSelectedRepo} repo={repo} selected={this.isSelected(repo)}/>;
     });
     var editingComponent = null;
     if(this.state.editionObject){
@@ -17,12 +19,18 @@ var App = React.createClass({
     }
     return (
       <div>
-        <h1>Application Management</h1>
-        {reposComponents}
+        <Table striped bordered condensed hover>
+          <thead>
+            <RepositoryListHeader onSelection={this.toggleSelectAll}/>
+          </thead>
+          <tbody>
+            {reposComponents}
+          </tbody>
+        </Table>
         <div>
-          <button onClick={this.openCreator}>Create New</button>
-          <button onClick={this.exportSelected}>Export Selected</button>
-          <button onClick={this.importNew}>Import</button>
+          <Button onClick={this.openCreator}>Create New</Button>
+          <Button onClick={this.exportSelected}>Export Selected</Button>
+          <Button onClick={this.importNew}>Import</Button>
         </div>
         {editingComponent}
         {this.state.importComponent}
@@ -51,10 +59,12 @@ var App = React.createClass({
     }
     var stringifiedLines = JSON.stringify(lines);
     var exportComponent = (
-      <ModalWindow>
-        <p>{stringifiedLines}</p>
-        <button onClick={this.closeExport}>Close</button>
-      </ModalWindow>
+      <Modal show={true}>
+        <Modal.Body>
+          <p>{stringifiedLines}</p>
+          <Button onClick={this.closeExport}>Close</Button>
+        </Modal.Body>
+      </Modal>
     );
     this.setState({exportComponent : exportComponent});
   },
@@ -63,15 +73,17 @@ var App = React.createClass({
   },
   importNew : function(){
     var importComponent = (
-      <ModalWindow>
-        <div>
-          <textarea onChange={this.updateImportData}></textarea>
-        </div>
-        <div>
-          <button onClick={this.doImport}>Import</button>
-          <button onClick={this.closeImport}>Close</button>
-        </div>
-      </ModalWindow>
+      <Modal show={true}>
+        <Modal.Body>
+          <div>
+            <Input onChange={this.updateImportData} type="textarea"/>
+          </div>
+          <div>
+            <Button onClick={this.doImport}>Import</Button>
+            <Button onClick={this.closeImport}>Close</Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     );
     this.setState({importComponent : importComponent});
   },
@@ -97,9 +109,20 @@ var App = React.createClass({
     //selected var represents if the box was checked (true) or unchecked (false)
     if(selected){
       this.state.selectedRepos.push(repo);
+      console.log(this.state.selectedRepos);
+      this.setState({selectedRepos : this.state.selectedRepos});
     }else{
       var index = this.state.selectedRepos.indexOf(repo);
       this.state.selectedRepos.splice(index, 1);
+      this.setState({selectedRepos : this.state.selectedRepos});
+    }
+  },
+  toggleSelectAll : function(selected){
+    if(selected){
+      var allSelected = [].concat(this.state.repos);
+      this.setState({selectedRepos : allSelected});
+    }else{
+      this.setState({selectedRepos : []});
     }
   },
   updateViewToDatabase : function(){
@@ -107,34 +130,9 @@ var App = React.createClass({
     listRepositories(function(repos){
       this.setState({"repos" : repos});
     }.bind(this));
-  }
-});
-var ModalWindow = React.createClass({
-  render : function(){
-    return (
-      <div style={this.style.overlayStyle}>
-        <div style={this.style.modalStyle}>
-          {this.props.children}
-        </div>
-      </div>
-    );
   },
-  style : {
-    overlayStyle : {
-      z : 20,
-      width : "100%",
-      height : "100%",
-      position : "fixed",
-      left : 0,
-      top : 0,
-      backgroundColor : "rgba(50,50,50, 0.9)",
-    },
-    modalStyle : {
-      margin : "50px",
-      padding : "20px",
-      backgroundColor : "white",
-      display : "inline-block"
-    }
+  isSelected : function(repo){
+    return this.state.selectedRepos.indexOf(repo) > -1;
   }
 });
 var RepositoryEditor = React.createClass({
@@ -149,21 +147,23 @@ var RepositoryEditor = React.createClass({
   },
   render: function() {
     return (
-      <ModalWindow>
+      <Modal show={true}>
+        <Modal.Body>
           <div style={this.style.line}>
-            Repo Name : <input type="text" onChange={this.changeEvent("scm")} defaultValue={this.props.repo.scm}/>
+            <Input type="text" label="Repo Name" onChange={this.changeEvent("scm")} defaultValue={this.props.repo.scm}/>
           </div>
           <div style={this.style.line}>
-            Issues Keyword : <input onChange={this.changeEvent("keyword")} type="text" defaultValue={this.props.repo.keyword}/>
+            <Input label="Issues Keyword" onChange={this.changeEvent("keyword")} type="text" defaultValue={this.props.repo.keyword}/>
           </div>
           <div style={this.style.line}>
-            TargetUrl <input type="text" onChange={this.changeEvent("targetURL")} defaultValue={this.props.repo.targetURL}/>
+            <Input label="Target URL" type="text" onChange={this.changeEvent("targetURL")} defaultValue={this.props.repo.targetURL}/>
           </div>
           <div style={this.style.line}>
-          <button onClick={this.triggerSaveEvent}>Save</button>
-          <button onClick={this.triggerCancelEvent}>Cancel</button>
+          <Button onClick={this.triggerSaveEvent}>Save</Button>
+          <Button onClick={this.triggerCancelEvent}>Cancel</Button>
           </div>
-      </ModalWindow>
+        </Modal.Body>
+      </Modal>
     );
   },
   changeEvent : function(property){
@@ -187,6 +187,26 @@ var RepositoryEditor = React.createClass({
     }
   }
 });
+var RepositoryListHeader = React.createClass({
+  render : function(){
+    return(
+      <tr>
+        <td md={1}><input onClick={this.triggerSelectionEvent} type="checkbox"/></td>
+        <td md={2}>Repository</td>
+        <td md={1}>Key</td>
+        <td md={3}>TargetURL</td>
+        <td md={5}>
+          <span></span>
+        </td>
+      </tr>
+    );
+  },
+  triggerSelectionEvent : function(event){
+    if(this.props.onSelection){
+      this.props.onSelection(event.target.checked);
+    }
+  }
+});
 
 var Repository = React.createClass({
   getInitialState : function(){
@@ -197,20 +217,19 @@ var Repository = React.createClass({
     if(this.state.editMode){
       editComponent = <RepositoryEditor onSave={this.triggerEditEvent} onCancel={this.cancelEdition} repo={this.props.repo} />;
     }
+
     return (
-      <div style={this.style.line}>
-        <div style={this.style.lineElement}>
-          <input onClick={this.triggerSelectionEvent} type="checkbox" />
-        </div>
-        <div style={this.style.lineElement}>{this.props.repo.scm}</div>
-        <div style={this.style.lineElement}>{this.props.repo.keyword}</div>
-        <div style={this.style.lineElement}>{this.props.repo.targetURL}</div>
-        <div style={this.style.lineElement}>
-          <button onClick={this.startEdition}>Edit</button>
-          <button onClick={this.delete}>Delete</button>
-        </div>
+      <tr>
+        <td md={1}><input onChange={this.triggerSelectionEvent} type="checkbox" checked={this.props.selected}/></td>
+        <td md={2}>{this.props.repo.scm}</td>
+        <td md={1}>{this.props.repo.keyword}</td>
+        <td md={3}>{this.props.repo.targetURL}</td>
+        <td md={5}>
+          <Button onClick={this.startEdition}>Edit</Button>
+          <Button onClick={this.delete}>Delete</Button>
+        </td>
         {editComponent}
-      </div>
+      </tr>
     );
   },
   triggerEditEvent : function(originalState, newState){
@@ -235,15 +254,6 @@ var Repository = React.createClass({
     deleteRepository(this.props.repo);
     if(this.props.onEdit){
       this.props.onEdit();
-    }
-  },
-  style : {
-    lineElement : {
-      display : "inline-block",
-      paddingLeft : "5px"
-    },
-    line : {
-
     }
   }
 });
