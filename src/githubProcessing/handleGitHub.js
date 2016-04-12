@@ -46,7 +46,7 @@ function processRepo(repos){
         var repo = repos[j];
         if (splittedBody[i].indexOf(repo.keyword) > -1){
           //Clean the link from some symbols usually added to destinguish issue-id from commit message
-          var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "").trim();
+          var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll(")", "").replaceAll("(", "").replaceAll("#", "").trim();
           commentBody.html(commentBody.html().replace(text.trim(), '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
 
         }
