@@ -35,7 +35,7 @@ function injectPage(){
 
 
 function processRepo(repos){
-  var components = $(".comment-body, .commit-title, .commit-desc");
+  var components = $(".comment-body, .commit-title, .commit-desc, .js-issue-title");
 
   for(var componentIndex = 0; componentIndex < components.length; componentIndex++){
     var commentBody = $(components[componentIndex]);
@@ -47,8 +47,8 @@ function processRepo(repos){
         if (splittedBody[i].indexOf(repo.keyword) > -1){
           //Clean the link from some symbols usually added to destinguish issue-id from commit message
           var cleanedText = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll("#", "").trim();
-          debugger;
           commentBody.html(commentBody.html().replace(text.trim(), '<a href="' + repo.targetURL + cleanedText + '">' + text + '</a>'));
+
         }
       }
     }
