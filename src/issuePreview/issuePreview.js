@@ -6,20 +6,20 @@ link.rel = "stylesheet";
 document.getElementsByTagName("head")[0].appendChild(link);
 
 issuePreviewer = {
-  enableIssuePreview : function(repo, id){
+  enableIssuePreview : function(repo, id, selectorPart){
     if(youtrackHandler.isCompatible(repo)){
       url = youtrackHandler.getRestURL(repo) + id;
       $.ajax({
         url : url,
-        success : content => this.setupTip(content, id),
+        success : content => this.setupTip(content, selectorPart),
         dataType : "json"
       });
     }
   },
-  setupTip : function(content, id){
+  setupTip : function(content, selectorID){
     var summary = content.field[2].value;
     var description = content.field[3].value;
-    var selector = '*[data-tracker-issue-id="' + id + '"]';
+    var selector = '*[data-tracker-issue-id="' + selectorID + '"]';
     var config = {showOn: 'mouseover', hideTriggers: ["tip", "trigger", "target"], hideOn : "mouseout", style : "glass"};
     new Opentip(selector, description, summary, config);
   }

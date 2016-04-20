@@ -35,6 +35,7 @@ function injectPage(){
 
 
 function processRepo(repos){
+  var pageRelativeIssueId = 0;
   var components = $(".comment-body, .commit-title, .commit-desc, .js-issue-title");
 
   for(var componentIndex = 0; componentIndex < components.length; componentIndex++){
@@ -47,8 +48,9 @@ function processRepo(repos){
         if (splittedBody[i].indexOf(repo.keyword) > -1){
           //Clean the link from some symbols usually added to destinguish issue-id from commit message
           var issueId = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll(")", "").replaceAll("(", "").replaceAll("#", "").trim();
-          commentBody.html(commentBody.html().replace(text.trim(), '<a data-tracker-issue-id="' + issueId + '" href="' + repo.targetURL + issueId + '">' + text + '</a>'));
-          issuePreviewer.enableIssuePreview(repo, issueId);
+          var newId = pageRelativeIssueId++;
+          commentBody.html(commentBody.html().replace(text.trim(), '<a data-tracker-issue-id="' + newId + '" href="' + repo.targetURL + issueId + '">' + text + '</a>'));
+          issuePreviewer.enableIssuePreview(repo, issueId, newId);
         }
       }
     }
