@@ -8,13 +8,17 @@
   "content_scripts": [
    {
      "matches": ["https://github.com/*"],
-     "js": ["vendor/jquery/dist/jquery.min.js", "src/storage/repository-storage.js", "src/githubProcessing/handleGitHub.js"]
+     "js": ["vendor/jquery/dist/jquery.min.js", "vendor/opentip/lib/opentip.js", "vendor/opentip/lib/adapter-jquery.js", "src/storage/repository-storage.js", "src/issuePreview/issuePreview.js", "src/githubProcessing/handleGitHub.js"]
    }
  ],
   "browser_action": {
     "default_popup": "src/popup/popup.html"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "https://*/"
+  ],
+  "web_accessible_resources": [
+      "vendor/opentip/css/opentip.css"
   ]
 }
