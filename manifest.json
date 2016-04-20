@@ -19,6 +19,7 @@
     "https://*/"
   ],
   "web_accessible_resources": [
-      "vendor/opentip/css/opentip.css"
+      "vendor/opentip/css/opentip.css",
+      "src/issuePreview/issuePreview.css"
   ]
 }

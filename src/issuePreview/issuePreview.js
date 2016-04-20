@@ -1,9 +1,14 @@
 //Add tip styles to page
-var link = document.createElement("link");
-link.href = chrome.extension.getURL("vendor/opentip/css/opentip.css");
-link.type = "text/css";
-link.rel = "stylesheet";
-document.getElementsByTagName("head")[0].appendChild(link);
+function addStyle(path){
+  var link = document.createElement("link");
+  link.href = chrome.extension.getURL(path);
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  document.getElementsByTagName("head")[0].appendChild(link);
+}
+
+addStyle("vendor/opentip/css/opentip.css");
+addStyle("src/issuePreview/issuePreview.css");
 
 issuePreviewer = {
   enableIssuePreview : function(repo, id, selectorPart){

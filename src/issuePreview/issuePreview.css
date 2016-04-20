@@ -1,0 +1,7 @@
+.opentip h1{
+  font-size: 15px;
+}
+
+.opentip-container.style-glass .opentip{
+    padding : 5px 10px;
+}
