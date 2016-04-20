@@ -55,7 +55,7 @@ var App = React.createClass({
     for(var i in this.state.selectedRepos){
       var obj = this.state.selectedRepos[i];
       //we need to ignore the id during export
-      lines.push({scm : obj.scm, keyword : obj.keyword, targetURL : obj.targetURL});
+      lines.push({scm : obj.scm, keyword : obj.keyword, targetURL : obj.targetURL, type : obj.type});
     }
     var stringifiedLines = JSON.stringify(lines);
     var exportComponent = (
@@ -144,6 +144,7 @@ var RepositoryEditor = React.createClass({
     this.state.editedElement.scm = this.props.repo.scm;
     this.state.editedElement.keyword = this.props.repo.keyword;
     this.state.editedElement.targetURL = this.props.repo.targetURL;
+    this.state.editedElement.type = this.props.repo.type;
   },
   render: function() {
     return (
@@ -157,6 +158,12 @@ var RepositoryEditor = React.createClass({
           </div>
           <div style={this.style.line}>
             <Input label="Target URL" type="text" onChange={this.changeEvent("targetURL")} defaultValue={this.props.repo.targetURL}/>
+          </div>
+          <div style={this.style.line}>
+            <Input label="Type" type="select" onChange={this.changeEvent("type")}>
+              <option value="YouTrack" selected={this.props.repo.type == "YouTrack" }>YouTrack</option>
+              <option selected={this.props.repo.type === undefined}>Unknown</option>
+            </Input>
           </div>
           <div style={this.style.line}>
           <Button onClick={this.triggerSaveEvent}>Save</Button>
@@ -194,7 +201,8 @@ var RepositoryListHeader = React.createClass({
         <td md={1}><input onClick={this.triggerSelectionEvent} type="checkbox"/></td>
         <td md={2}>Repository</td>
         <td md={1}>Key</td>
-        <td md={3}>TargetURL</td>
+        <td md={2}>TargetURL</td>
+        <td md={1}>Type</td>
         <td md={5}>
           <span></span>
         </td>
@@ -223,7 +231,8 @@ var Repository = React.createClass({
         <td md={1}><input onChange={this.triggerSelectionEvent} type="checkbox" checked={this.props.selected}/></td>
         <td md={2}>{this.props.repo.scm}</td>
         <td md={1}>{this.props.repo.keyword}</td>
-        <td md={3}>{this.props.repo.targetURL}</td>
+        <td md={2}>{this.props.repo.targetURL}</td>
+        <td md={1}>{this.props.repo.type || "Unknown"}</td>
         <td md={5}>
           <Button onClick={this.startEdition}>Edit</Button>
           <Button onClick={this.delete}>Delete</Button>

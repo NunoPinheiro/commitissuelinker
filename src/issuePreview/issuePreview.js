@@ -27,7 +27,7 @@ issuePreviewer = {
 
 youtrackHandler = {
     isCompatible : function(repo){
-      if(repo.youTrack){
+      if(repo.type == "YouTrack"){
         return true;
       }
       else if(repo.targetURL.split("/")[3] == "youtrack"){
@@ -41,20 +41,23 @@ youtrackHandler = {
         return repo.restAddress;
       }
       else{
-        //Calculate the address by adding "rest" after the "youtrack" segment
-      }
-      var splittedUrl = repo.targetURL.split("/");
-      var apiUrl = "";
-      for(var i = 0; i <= 3; i++){
-        apiUrl += splittedUrl[i]  + "/";
-      }
-      apiUrl += "rest/";
-      for(i = 4; i < splittedUrl.length; i++){
-        if(splittedUrl[i] != ""){
+        //Calculate the address by adding "rest" before the "issue" segment
+        //This works since all the youtrack pages are in the format host/[contextPath/]issue
+
+        var splittedUrl = repo.targetURL.split("/");
+        var issuePartIndex = splittedUrl.indexOf("issue");
+        var apiUrl = "";
+        for(var i = 0; i < issuePartIndex; i++){
           apiUrl += splittedUrl[i]  + "/";
         }
+        apiUrl += "rest/";
+        for(i = issuePartIndex; i < splittedUrl.length; i++){
+          if(splittedUrl[i] !== ""){
+            apiUrl += splittedUrl[i]  + "/";
+          }
+        }
+        return apiUrl;
       }
-      return apiUrl;
     }
 };
 
