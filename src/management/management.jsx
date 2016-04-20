@@ -164,6 +164,9 @@ var RepositoryImporter = React.createClass({
     }
     if(this.state.type == "YouTrack"){
       var url = this.state.importParameter;
+      if(!url.endsWith("/")){
+        url += "/";
+      }
       var apiUrl = url + "rest/project/all";
       $.get(apiUrl, projects => this.importProjects(url, projects), "json");
     }
@@ -174,7 +177,8 @@ var RepositoryImporter = React.createClass({
   importProjects : function(baseUrl, projects){
     var newProjects = [];
     for(var i in projects){
-      var newProject = {scm : ""};
+      var bestEffortName = projects[i].name.replace(/\s/g, '').toLowerCase();
+      var newProject = {scm : bestEffortName};
       newProject.keyword = projects[i].shortName;
       newProject.targetURL = baseUrl + "issue/";
       newProject.type = "YouTrack";
