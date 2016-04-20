@@ -72,26 +72,11 @@ var App = React.createClass({
     this.setState({exportComponent : null});
   },
   importNew : function(){
-    var importComponent = (
-      <Modal show={true}>
-        <Modal.Body>
-          <div>
-            <Input onChange={this.updateImportData} type="textarea"/>
-          </div>
-          <div>
-            <Button onClick={this.doImport}>Import</Button>
-            <Button onClick={this.closeImport}>Close</Button>
-          </div>
-        </Modal.Body>
-      </Modal>
-    );
+    var importComponent = (<RepositoryImporter onClose={this.closeImport} onImport={this.doImport}/>);
     this.setState({importComponent : importComponent});
   },
-  updateImportData : function(event){
-    this.state.importData = event.target.value;
-  },
-  doImport : function(){
-    var objects = JSON.parse(this.state.importData);
+  doImport : function(data){
+    var objects = JSON.parse(data);
 
     for(var i in objects){
       addOrUpdateRepository(objects[i], this.updateImportedLines);
@@ -135,6 +120,33 @@ var App = React.createClass({
     return this.state.selectedRepos.indexOf(repo) > -1;
   }
 });
+var RepositoryImporter = React.createClass({
+  getInitialState : function(){
+    return {importData : []};
+  },
+  render : function(){
+    return(
+      <Modal show={true}>
+        <Modal.Body>
+          <div>
+            <Input onChange={this.updateImportData} type="textarea"/>
+          </div>
+          <div>
+            <Button onClick={this.triggerImport}>Import</Button>
+            <Button onClick={this.props.onClose}>Close</Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+    );
+  },
+  updateImportData : function(event){
+    this.state.importData = event.target.value;
+  },
+  triggerImport : function(){
+    this.props.onImport(this.state.importData);
+  }
+});
+
 var RepositoryEditor = React.createClass({
   getInitialState : function(){
     return {editedElement : {}};
