@@ -75,9 +75,7 @@ var App = React.createClass({
     var importComponent = (<RepositoryImporter onClose={this.closeImport} onImport={this.doImport}/>);
     this.setState({importComponent : importComponent});
   },
-  doImport : function(data){
-    var objects = JSON.parse(data);
-
+  doImport : function(objects){
     for(var i in objects){
       addOrUpdateRepository(objects[i], this.updateImportedLines);
     }
@@ -122,14 +120,31 @@ var App = React.createClass({
 });
 var RepositoryImporter = React.createClass({
   getInitialState : function(){
-    return {importData : []};
+    return {type : "YouTrack", importParameter : ""};
   },
   render : function(){
+    var inputType;
+    var inputLabel;
+    if(this.state.type == "string"){
+      inputType = "textarea";
+      inputLabel = "";
+    }
+    if(this.state.type == "YouTrack"){
+      inputType = "text";
+      inputLabel = "YouTrack URL";
+    }
+
     return(
       <Modal show={true}>
         <Modal.Body>
           <div>
-            <Input onChange={this.updateImportData} type="textarea"/>
+            <Input type="select" onChange={this.updateType} label="Import From">
+              <option value="YouTrack">YouTrack</option>
+              <option value="string">Exported Json</option>
+            </Input>
+          </div>
+          <div>
+            <Input onChange={this.updateImportParameter} label={inputLabel} type={inputType}/>
           </div>
           <div>
             <Button onClick={this.triggerImport}>Import</Button>
@@ -139,11 +154,33 @@ var RepositoryImporter = React.createClass({
       </Modal>
     );
   },
-  updateImportData : function(event){
-    this.state.importData = event.target.value;
+  updateImportParameter : function(event){
+    this.state.importParameter = event.target.value;
   },
   triggerImport : function(){
-    this.props.onImport(this.state.importData);
+    if(this.state.type == "string"){
+      var objects = JSON.parse(this.state.importParameter);
+      this.props.onImport(objects);
+    }
+    if(this.state.type == "YouTrack"){
+      var url = this.state.importParameter;
+      var apiUrl = url + "rest/project/all";
+      $.get(apiUrl, projects => this.importProjects(url, projects), "json");
+    }
+  },
+  updateType: function(e){
+    this.setState({type : e.target.value});
+  },
+  importProjects : function(baseUrl, projects){
+    var newProjects = [];
+    for(var i in projects){
+      var newProject = {scm : ""};
+      newProject.keyword = projects[i].shortName;
+      newProject.targetURL = baseUrl + "issue/";
+      newProject.type = "YouTrack";
+      newProjects.push(newProject);
+    }
+    this.props.onImport(newProjects);
   }
 });
 
