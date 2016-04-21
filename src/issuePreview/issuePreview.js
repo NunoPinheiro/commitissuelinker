@@ -24,9 +24,15 @@ issuePreviewer = {
   setupTip : function(content, selectorID){
     var summary = content.field[2].value;
     var description = content.field[3].value;
+    summary =  $('<div/>').text(summary).html();
+    description =  "<pre>" + $('<div/>').text(description).html() + "</pre>";
+    console.log(description);
     var selector = '*[data-tracker-issue-id="' + selectorID + '"]';
     var config = {showOn: 'mouseover', hideTriggers: ["tip", "trigger", "target"], hideOn : "mouseout", style : "glass"};
     new Opentip(selector, description, summary, config);
+  },
+  escapeString : function(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
   }
 };
 

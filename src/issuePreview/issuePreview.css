@@ -5,3 +5,7 @@
 .opentip-container.style-glass .opentip{
     padding : 5px 10px;
 }
+
+.opentip-container {
+  max-width: 1000px;
+}
