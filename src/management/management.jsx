@@ -4,13 +4,14 @@ var { Button, Modal, Row, Table, PageHeader, Input} = window.ReactBootstrap;
 
 var App = React.createClass({
   getInitialState : function(){
-    return {repos : [], selectedRepos : [], editionObject : null, exportComponent : null, importComponent : null, imported : ""};
+    return {repos : [], selectedRepos : [], editionObject : null, exportComponent : null, importComponent : null, imported : "", filter : ""};
   },
   componentDidMount : function(){
     this.updateViewToDatabase();
   },
   render: function() {
-    var reposComponents = this.state.repos.map(repo => {
+    var visibleRepos = this.state.filter === "" ? this.state.repos : this.state.repos.filter(repo => this.match(this.state.filter, repo));
+    var reposComponents = visibleRepos.map(repo => {
       return <Repository key={repo.id} onEdit={this.updateViewToDatabase} onSelectToggle={this.toggleSelectedRepo} repo={repo} selected={this.isSelected(repo)}/>;
     });
     var editingComponent = null;
@@ -19,6 +20,9 @@ var App = React.createClass({
     }
     return (
       <div>
+        <div>
+          <Input md={4} type="text" onChange={this.updateFilter} placeholder="Filter"/>
+        </div>
         <Table striped bordered condensed hover>
           <thead>
             <RepositoryListHeader onSelection={this.toggleSelectAll}/>
@@ -116,6 +120,17 @@ var App = React.createClass({
   },
   isSelected : function(repo){
     return this.state.selectedRepos.indexOf(repo) > -1;
+  },
+  updateFilter : function(e){
+    this.setState({filter : e.target.value});
+  },
+  match : function(filter, repo){
+    filter = filter.toLowerCase()
+    var keyMatches = repo.keyword && repo.keyword.toLowerCase().indexOf(filter) > -1;
+    var urlMatches = repo.targetURL && repo.targetURL.toLowerCase().indexOf(filter) > -1;
+    var typeMatches = repo.type && repo.type.toLowerCase().indexOf(filter) > -1;
+    var scmMatches = repo.scm && repo.scm.toLowerCase().indexOf(filter) > -1;
+    return keyMatches || urlMatches || typeMatches || scmMatches;
   }
 });
 var RepositoryImporter = React.createClass({
