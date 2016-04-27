@@ -1,4 +1,6 @@
 # Commit Issue Linker
+![alt Logo](https://raw.githubusercontent.com/NunoPinheiro/commitissuelinker/master/imgs/128px.png)
+
 Add links to your issues in your commits or pull requests
 
 # Compiling
