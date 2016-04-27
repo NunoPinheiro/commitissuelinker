@@ -3,7 +3,7 @@
 
   "name": "Commit Issue Linker",
   "description": "This extension adds links to your issue tracker when you are inside a github commit/pull request",
-  "version": "1.0",
+  "version": "1.0.1",
 
   "content_scripts": [
    {
