@@ -3,6 +3,10 @@
 
 Add links to your issues in your commits or pull requests
 
+# Usage
+You can check usage instructions on JetBrain's YouTrack blog:
+http://blog.jetbrains.com/youtrack/2016/05/adding-youtrack-issue-links-on-github/
+
 # Compiling
 ## Setup
 Install Babel:
@@ -18,10 +22,11 @@ Compile jsx:
 
 `babel  src/management.jsx  > src/management.js`
 
-
-
 # Contributing
 When reporting an issue or submiting a PR, please try to provide an example (commit or pull request) where the issue can be replicated.
 
 In case you had an issue in a private repository, you can try to replicate the conditions in the following repository:
 https://github.com/NunoPinheiro/trackertest
+
+# Acknowledgments
+Thanks to the JetBrains YouTrack team for suggesting new features and promoting the project.
