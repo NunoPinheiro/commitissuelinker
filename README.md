@@ -11,8 +11,9 @@ http://blog.jetbrains.com/youtrack/2016/05/adding-youtrack-issue-links-on-github
 ## Setup
 Install Babel:
 
-`npm install -g babel-cli
-npm install babel-preset-react babel-preset-es2015`
+`npm install -g babel-cli`
+
+`npm install babel-preset-react babel-preset-es2015`
 
 Install Dependencies with bower:
 
@@ -20,7 +21,7 @@ Install Dependencies with bower:
 ## Compile jsx
 Compile jsx:
 
-`babel  src/management.jsx  > src/management.js`
+`babel  src/management/management.jsx  > src/management/management.js`
 
 # Contributing
 When reporting an issue or submiting a PR, please try to provide an example (commit or pull request) where the issue can be replicated.
