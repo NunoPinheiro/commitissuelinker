@@ -40,7 +40,7 @@ function processRepo(repos){
 
   for(var componentIndex = 0; componentIndex < components.length; componentIndex++){
     var commentBody = $(components[componentIndex]);
-    var splittedBody = commentBody.text().toString().split(" ");
+    var splittedBody = commentBody.text().toString().split(/\s/);
     for( var i in splittedBody){
       var text = splittedBody[i];
       for(var j in repos){
