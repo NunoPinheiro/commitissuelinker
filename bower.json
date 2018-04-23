@@ -6,6 +6,7 @@
     "jquery": "2.2.3",
     "react-bootstrap": "~0.28.5",
     "bootstrap": "~3.3.6",
-    "opentip": "~2.4.6"
+    "opentip": "~2.4.6",
+    "requirejs": "~2.3.5"
   }
 }
