@@ -46,10 +46,6 @@ function processRepo(repos){
       for(var j in repos){
         var repo = repos[j];
         if (splittedBody[i].indexOf(repo.keyword) > -1){
-          if(text.indexOf(repo.targetURL) > -1){
-            //ignore this part since it already contains a proper link
-            continue;
-          }
           //Clean the link from some symbols usually added to destinguish issue-id from commit message
           var issueId = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll(")", "").replaceAll("(", "").replaceAll("#", "").trim();
           var newId = pageRelativeIssueId++;
