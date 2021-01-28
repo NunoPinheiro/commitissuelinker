@@ -40,16 +40,12 @@ function processRepo(repos){
 
   for(var componentIndex = 0; componentIndex < components.length; componentIndex++){
     var commentBody = $(components[componentIndex]);
-    var splittedBody = commentBody.text().toString().split(/\s/);
+    var splittedBody = commentBody.text().toString().split(/[\s\.,;]/);
     for( var i in splittedBody){
       var text = splittedBody[i];
       for(var j in repos){
         var repo = repos[j];
         if (splittedBody[i].indexOf(repo.keyword) > -1){
-          if(text.indexOf(repo.targetURL) > -1){
-            //ignore this part since it already contains a proper link
-            continue;
-          }
           //Clean the link from some symbols usually added to destinguish issue-id from commit message
           var issueId = text.replaceAll("[", "").replaceAll("\\]", "").replaceAll(")", "").replaceAll("(", "").replaceAll("#", "").trim();
           var newId = pageRelativeIssueId++;
